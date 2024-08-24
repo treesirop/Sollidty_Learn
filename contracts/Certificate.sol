@@ -8,12 +8,6 @@ import "./dependancies/librairies/Base64.sol";
 error CourseCertificate__NotIssued();
 error CourseCertificate__NotOwner();
 
-/**
- * @title CourseCertificate
- * @author [Your Name]
- * @notice Non-transferable Soul Bound Token (NFT) smart contract for course certificates
- * @dev This contract is used to award certificates for completing a course. Anyone can mint a certificate by providing the course name and OCID.
- */
 contract CourseCertificate is ERC721URIStorage {
     using Strings for uint256;
     // ERC721 Variables:
@@ -85,6 +79,7 @@ contract CourseCertificate is ERC721URIStorage {
         bytes memory dataURI = abi.encodePacked(
             '{',
                 '"name": "', s_courseName, ' Certificate #', tokenId.toString(), '",',
+                '"image": "https://example.com/image.png",',
                 '"description": "Certificate for completing the course",',
                 '"attributes": [',
                     '{',

@@ -19,17 +19,17 @@ const account = privateKeyToAccount(`0x${SEPOLIA_PRIVATE_KEY}`);
   }).extend(publicActions);
 
   const abi = CourseCertificate["abi"];
-  const bin = CourseCertificate["bytecode"];
+  // const bin = CourseCertificate["bytecode"];
 
   // // 部署合约并传递构造函数参数
   // const hash = await client.deployContract({
   //   abi,
   //   account,
+  //   args: ["My New Certificate"], // 传递构造函数参数
   //   bytecode: `0x${bin}`,
-  //   args: ["My New Certificate"] // 传递构造函数参数
   // });
 
-  // // 等待交易确认并获取合约地址
+  // 等待交易确认并获取合约地址
   // const { contractAddress } = await client.getTransactionReceipt({ hash });
   const contractAddress = "0x282BC825f4b82678412E8d76BA7f4D8582CdD217"
   if (contractAddress) {
