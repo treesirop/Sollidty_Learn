@@ -2,7 +2,7 @@ import { createWalletClient, http, getContract, Hex, publicActions } from 'viem'
 import { sepolia } from 'viem/chains';
 import * as dotenv from 'dotenv';
 import { privateKeyToAccount } from 'viem/accounts';
-import CourseCertificate from "../artifacts/contracts/Lock.sol/CourseCertificate.json";
+import CourseCertificate from "../artifacts/contracts/Certificate.sol/CourseCertificate.json";
 dotenv.config();
 
 const ALCHEMY_API_URL = process.env.ALCHEMY_API_URL;

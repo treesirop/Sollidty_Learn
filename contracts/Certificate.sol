@@ -1,24 +1,21 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "./dependancies/ERC721URIStorage.sol";
-import "./dependancies/librairies/Counters.sol";
-import "./dependancies/librairies/Base64.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 error CourseCertificate__NotIssued();
 error CourseCertificate__NotOwner();
 
 contract CourseCertificate is ERC721URIStorage {
     using Strings for uint256;
-    // ERC721 Variables:
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
 
     // Certificate Variables:
     string internal s_courseName; // Name of the course
     address private _owner; // Contract owner
     mapping(address => bool) internal s_issuedCertificates;
     mapping(address => string) internal s_studentToCertificate;
+    uint256 private _tokenIds; // Manual counter for token IDs
 
     struct Certificate {
         string s_courseName;
@@ -26,8 +23,8 @@ contract CourseCertificate is ERC721URIStorage {
     }
     // Events:
     event CertificateIssued(address student);
-    event CertificateMinted(address student, uint256 tokenId,Certificate certificate);
- 
+    event CertificateMinted(address student, uint256 tokenId, Certificate certificate);
+
     modifier onlyOwner() {
         if (msg.sender != _owner) {
             revert CourseCertificate__NotOwner();
@@ -40,6 +37,7 @@ contract CourseCertificate is ERC721URIStorage {
     ) ERC721("CourseCertificateSoulBoundToken", "CCSBT") {
         s_courseName = courseName;
         _owner = msg.sender;
+        _tokenIds = 0; // Initialize the token ID counter
     }
 
     function issueCertificate(address student, string memory courseName) external onlyOwner {
@@ -56,8 +54,8 @@ contract CourseCertificate is ERC721URIStorage {
             revert CourseCertificate__NotIssued();
         }
 
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        _tokenIds += 1; // Increment the token ID counter
+        uint256 newItemId = _tokenIds;
         _mint(msg.sender, newItemId);
 
         string memory tokenURI = generateTokenURI(newItemId, ocid);
@@ -70,7 +68,7 @@ contract CourseCertificate is ERC721URIStorage {
             s_courseName: s_courseName,
             ocid: ocid
         });
-        emit CertificateMinted(msg.sender, newItemId,certificate);
+        emit CertificateMinted(msg.sender, newItemId, certificate);
 
         return newItemId;
     }
@@ -83,11 +81,11 @@ contract CourseCertificate is ERC721URIStorage {
                 '"description": "Certificate for completing the course",',
                 '"attributes": [',
                     '{',
-                        '"trait type": "Course Name",',
+                        '"trait_type": "Course Name",',
                         '"value": "', s_courseName, '"',
                     '},',
                     '{',
-                        '"trait type": "OCID",',
+                        '"trait_type": "OCID",',
                         '"value": "', ocid, '"',
                     '}',
                 ']',
@@ -114,7 +112,7 @@ contract CourseCertificate is ERC721URIStorage {
         return s_issuedCertificates[student];
     }
 
-    function getTokenCounter() public view returns (Counters.Counter memory) {
+    function getTokenCounter() public view returns (uint256) {
         return _tokenIds;
     }
 
